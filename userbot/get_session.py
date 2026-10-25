@@ -32,9 +32,10 @@ async def main():
         print_qr(qr.url)
         print("(the QR refreshes automatically every ~30 seconds)")
 
-        while not qr.token_alive:
+        while True:
             try:
                 await qr.wait()
+                break
             except asyncio.TimeoutError:
                 await qr.recreate()
                 print_qr(qr.url)
