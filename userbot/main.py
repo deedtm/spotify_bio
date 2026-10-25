@@ -29,9 +29,8 @@ async def main():
     if not SESSION_STRING:
         raise SystemExit("USERBOT_SESSION must be set in .env (run python -m userbot.get_session)")
 
-    client = TelegramClient(
-        StringSession(SESSION_STRING), API_ID, API_HASH, parse_mode="html"
-    )
+    client = TelegramClient(StringSession(SESSION_STRING), API_ID, API_HASH)
+    client.parse_mode = "html"
     await client.start()  # uses the session string, no interaction needed
     me = await client.get_me()
     logger.info(f"USERBOT STARTED {me.id}:{me.username}")
