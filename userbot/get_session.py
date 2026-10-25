@@ -7,9 +7,10 @@ Scan the QR from Telegram: Settings -> Devices -> Link Desktop Device.
 Copy the printed session string into .env (USERBOT_SESSION)
 """
 import asyncio
+from getpass import getpass
 
 import qrcode
-from telethon import TelegramClient
+from telethon import TelegramClient, errors
 from telethon.sessions import StringSession
 
 from .config import API_HASH, API_ID
@@ -39,6 +40,10 @@ async def main():
             except asyncio.TimeoutError:
                 await qr.recreate()
                 print_qr(qr.url)
+            except errors.SessionPasswordNeededError:
+                password = getpass("2FA password: ")
+                await client.sign_in(password=password)
+                break
 
         me = await client.get_me()
         print(f"\nLogged in as {me.first_name} (@{me.username})")
