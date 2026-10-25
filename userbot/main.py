@@ -12,7 +12,7 @@ POLL_INTERVAL = 3
 
 
 async def apply_edits(client: TelegramClient):
-    while edit := await edit_crud.take():
+    for edit in await edit_crud.take_latest():
         chat_id, message_id, html = edit.chat_id, edit.message_id, edit.html
 
         target_chat = int(chat_id) if chat_id.lstrip("-").isdigit() else chat_id
@@ -21,7 +21,10 @@ async def apply_edits(client: TelegramClient):
             await client.edit_message(target_chat, message_id, html, parse_mode="html")
             logger.info(f"Post {chat_id}/{message_id} edited")
         except Exception as e:
-            logger.error(f"Edit {chat_id}/{message_id} failed: {e}")
+            if "not modified" in str(e):
+                logger.debug(f"Post {chat_id}/{message_id} is already up to date")
+            else:
+                logger.error(f"Edit {chat_id}/{message_id} failed: {e}")
         await edit_crud.update("id", edit.id, done=True)
 
 

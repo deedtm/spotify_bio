@@ -16,8 +16,8 @@ class EditCRUD(CRUDBase[Edit]):
             created_at=int(time.time()),
         )
 
-    async def take(self) -> Edit | None:
-        """Return the oldest not-done edit, or None"""
+    async def take_latest(self) -> list[Edit]:
+        """Return the newest not-done edit for every post, dropping older queued ones"""
         async for session in get_session():
             from sqlalchemy import select
 
@@ -25,10 +25,14 @@ class EditCRUD(CRUDBase[Edit]):
                 select(self.model)
                 .where(self.model.done == False)  # noqa: E712
                 .order_by(self.model.id)
-                .limit(1)
             )
-            return await session.scalar(stmt)
-        return None
+            edits = (await session.scalars(stmt)).all()
+
+            latest: dict[tuple, Edit] = {}
+            for edit in edits:
+                latest[(edit.chat_id, edit.message_id)] = edit
+            return list(latest.values())
+        return []
 
 
 edit_crud = EditCRUD(get_session)
