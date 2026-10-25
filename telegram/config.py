@@ -31,15 +31,17 @@ USERS_ACCESSES = {
 
 ######### [spotify]
 
-_POST_LINK_RE = re.compile(r"^(?:https?://)?t\.me/(?:c/)?(\w+)/(\d+)$")
+_POST_LINK_RE = re.compile(r"^(?:https?://)?t\.me/(?:(c/)(\w+)|(\w+))/(\d+)$")
 
 
 def parse_post_link(link: str) -> tuple[str, int] | None:
     """Parse a t.me post link into (chat_id, message_id)"""
     if not (match := _POST_LINK_RE.match(link.strip())):
         return None
-    chat, message_id = match.groups()
-    return ("-" + chat if chat.isdigit() else chat), int(message_id)
+    private, internal_chat, username, message_id = match.groups()
+    # t.me/c/<internal_id> links use the internal id, the full chat id is -100<internal_id>
+    chat = "-100" + internal_chat if private else username
+    return chat, int(message_id)
 
 
 POST_LINK = parse_post_link(os.getenv("POST_LINK", ""))
