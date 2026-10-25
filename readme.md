@@ -9,7 +9,7 @@ Based on [aiogram_base_bot](https://github.com/deedtm/aiogram_base_bot).
 - aiogram3 + PostgreSQL + Docker (same base as aiogram_base_bot)
 - Updates the "now playing" line in a channel post every N seconds
 - Edits **only** the marker line, found by text, not by line number
-- Premium emojis and links in the post stay intact (the post is edited as HTML)
+- Premium emojis stay intact: the bot queues edits into the shared database and a bundled Pyrogram userbot applies them via MTProto (Bot API still strips custom emoji in channel messages)
 - Pause/absence of playback shows a short idle line instead of the track
 
 ## Setup
@@ -19,8 +19,9 @@ Based on [aiogram_base_bot](https://github.com/deedtm/aiogram_base_bot).
 3. Run `python -m spotify.get_token`, log in and copy the printed refresh token into `.env`
 4. Add the bot to your channel as an admin with "edit messages" permission
 5. Put a track line with the marker (default `🎧`) into your post
-6. Forward the post to the bot with the `/setpost` command — the bot saves its exact HTML
-7. `docker-compose up --build -d`
+6. Run `python -m userbot.get_session` (one-time, locally), log in and copy the printed session string into `.env`
+7. Forward the post to the bot with the `/setpost` command — the bot saves its exact HTML
+8. `docker-compose up --build -d`
 
 ## Commands (owner only)
 

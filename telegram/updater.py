@@ -4,7 +4,7 @@ from html import escape
 from aiogram import Bot
 from loguru import logger
 
-from database.crud_managers import post_crud
+from database.crud_managers import edit_crud, post_crud
 from spotify.api import Track, get_current_track
 from templates import SPOTIFY as tmpl
 
@@ -32,7 +32,8 @@ def replace_marker_line(text: str, marker: str, new_line: str) -> str | None:
 
 
 async def update_post(bot: Bot) -> bool:
-    """Update the marker line in the channel post. Returns True if the post was edited"""
+    """Queue an update of the marker line; the userbot applies it (Bot API
+    strips premium emoji in channel messages, so the edit goes through MTProto)"""
     post = await post_crud.get_one()
     if post is None:
         logger.warning("No post stored yet, forward the post to the bot via /setpost")
@@ -53,11 +54,9 @@ async def update_post(bot: Bot) -> bool:
         logger.debug("Track line is up to date, skipping")
         return False
 
-    await bot.edit_message_text(
-        new_text, chat_id=post.chat_id, message_id=post.message_id
-    )
+    await edit_crud.push(post.chat_id, post.message_id, new_text)
     await post_crud.update(post.id, html=new_text)
-    logger.info(f"Post updated: {track_line}")
+    logger.info(f"Edit queued: {track_line}")
     return True
 
 
