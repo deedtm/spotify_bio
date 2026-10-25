@@ -1,7 +1,7 @@
 services:
   bot:
     build: .
-    container_name: basebot
+    container_name: spotifybio_bot
     restart: always
     env_file: .env
     depends_on:
@@ -10,14 +10,12 @@ services:
 
   db:
     image: postgres:15-alpine
-    container_name: basebot_db
+    container_name: spotifybio_db
     restart: always
     environment:
       POSTGRES_USER: ${DB_USER:?DB_USER is not specified in .env}
       POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is not specified in .env}
       POSTGRES_DB: ${DB_NAME:?DB_NAME is not specified in .env}
-    ports:
-      - "5432:5432"
     volumes:
       - pg_data:/var/lib/postgresql/data
     healthcheck:
