@@ -1,3 +1,7 @@
+from dotenv import load_dotenv
+
+load_dotenv()
+
 import os
 
 API_ID = int(os.getenv("USERBOT_API_ID", 0))

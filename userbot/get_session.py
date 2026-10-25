@@ -6,6 +6,9 @@ python -m userbot.get_session
 """
 import asyncio
 
+# pyrogram 2.0.106 calls asyncio.get_event_loop() at import time, which is gone in python 3.12+
+asyncio.set_event_loop(asyncio.new_event_loop())
+
 from pyrogram import Client
 
 from .config import API_HASH, API_ID
