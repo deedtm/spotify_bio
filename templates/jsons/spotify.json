@@ -1,0 +1,12 @@
+{
+    "track_line": "🎧  <a href=\"{url}\">{artist} — {name}</a>",
+    "idle_line": "🎧  —",
+    "np": "🎧  {} — {}\n🔗  {}",
+    "nothing": "💤  Nothing is playing right now",
+    "marker": "🔍  Current marker: <code>{}</code>",
+    "marker_set": "✅  Track marker set:\n<code>{}</code>",
+    "marker_missing": "🔎  Marker line not found in the post",
+    "post_missing": "😢  Post not found, check POST_LINK in .env",
+    "post_link_bad": "❌  Cannot parse POST_LINK from .env:\n<code>{}</code>",
+    "updated": "✅  Post updated:\n\n{}"
+}

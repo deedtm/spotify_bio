@@ -1,0 +1,23 @@
+[telegram]
+parse_mode = HTML
+disable_link_preview = 1
+drop_pending_updates = 1
+back_prefix = ↩️
+users_list_amount = 10
+
+[accesses]
+owner = 50
+admin = 20
+moderator = 10
+user = 1
+banned = 0
+
+[spotify]
+track_marker = 🎧
+update_interval = 30
+
+[time]
+timezone_offset = 4
+
+[database]
+path = database.db
