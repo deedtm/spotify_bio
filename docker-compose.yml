@@ -13,7 +13,7 @@ services:
     container_name: spotifybio_userbot
     restart: always
     env_file: .env
-    command: python userbot/main.py
+    command: python -m userbot.main
     depends_on:
       db:
         condition: service_healthy
