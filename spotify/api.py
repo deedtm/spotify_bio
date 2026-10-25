@@ -3,7 +3,7 @@ from dataclasses import dataclass
 import aiohttp
 
 from .config import CURRENTLY_PLAYING_URL
-from .token import get_token
+from .auth import get_token
 
 
 @dataclass(frozen=True)

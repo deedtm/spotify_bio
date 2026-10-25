@@ -16,7 +16,7 @@ Based on [aiogram_base_bot](https://github.com/deedtm/aiogram_base_bot).
 
 1. `cp config.ini.example config.ini` and `cp .env.example .env`, fill both in
 2. Create an app at https://developer.spotify.com/dashboard with redirect URI `http://127.0.0.1:8899/callback`
-3. Run `python spotify/get_token.py`, log in and copy the printed refresh token into `.env`
+3. Run `python -m spotify.get_token`, log in and copy the printed refresh token into `.env`
 4. Add the bot to your channel as an admin with "edit messages" permission
 5. Put a track line with the marker (default `🎧`) into your post
 6. Forward the post to the bot with the `/setpost` command — the bot saves its exact HTML
