@@ -19,7 +19,7 @@ Based on [aiogram_base_bot](https://github.com/deedtm/aiogram_base_bot).
 3. Run `python -m spotify.get_token`, log in and copy the printed refresh token into `.env`
 4. Add the bot to your channel as an admin with "edit messages" permission
 5. Put a track line with the marker (default `🎧`) into your post
-6. Run `python -m userbot.get_session` (one-time, locally), log in and copy the printed session string into `.env`
+6. Run `python -m userbot.get_session` (one-time, locally) and scan the QR from Telegram (Settings -> Devices -> Link Desktop Device), then copy the printed session string into `.env`
 7. Forward the post to the bot with the `/setpost` command — the bot saves its exact HTML
 8. `docker-compose up --build -d`
 

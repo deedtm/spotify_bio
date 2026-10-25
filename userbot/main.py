@@ -1,58 +1,38 @@
 import asyncio
-import re
 
 from loguru import logger
-from pyrogram import Client, enums
+from telethon import TelegramClient
+from telethon.sessions import StringSession
 
-from database.crud_managers import edit_crud, post_crud
+from database.crud_managers import edit_crud
 
 from .config import API_HASH, API_ID, SESSION_STRING
 
 POLL_INTERVAL = 3
 
-_TG_EMOJI_RE = re.compile(r'<tg-emoji emoji-id="(\d+)">(.*?)</tg-emoji>')
 
-
-def to_pyrogram_html(text: str) -> str:
-    """aiogram renders premium emoji as <tg-emoji>, pyrogram expects <emoji>"""
-    return _TG_EMOJI_RE.sub(r'<emoji id="\1">\2</emoji>', text)
-
-
-async def apply_edits(client: Client):
+async def apply_edits(client: TelegramClient):
     while edit := await edit_crud.take():
         chat_id, message_id, html = edit.chat_id, edit.message_id, edit.html
 
-        if chat_id.lstrip("-").isdigit():
-            target_chat = int(chat_id)
-        else:
-            target_chat = chat_id
+        target_chat = int(chat_id) if chat_id.lstrip("-").isdigit() else chat_id
 
         try:
-            await client.edit_message_text(
-                chat_id=target_chat,
-                message_id=message_id,
-                text=to_pyrogram_html(html),
-                parse_mode=enums.ParseMode.HTML,
-            )
+            await client.edit_message(target_chat, message_id, html, parse_mode="html")
             logger.info(f"Post {chat_id}/{message_id} edited")
-            await edit_crud.update(edit.id, done=True)
         except Exception as e:
             logger.error(f"Edit {chat_id}/{message_id} failed: {e}")
-            await edit_crud.update(edit.id, done=True)
+        await edit_crud.update(edit.id, done=True)
 
 
 async def main():
     if not SESSION_STRING:
         raise SystemExit("USERBOT_SESSION must be set in .env (run python -m userbot.get_session)")
 
-    client = Client(
-        "spotify_bio_userbot",
-        api_id=API_ID,
-        api_hash=API_HASH,
-        session_string=SESSION_STRING,
-        parse_mode=enums.ParseMode.HTML,
+    client = TelegramClient(
+        StringSession(SESSION_STRING), API_ID, API_HASH, parse_mode="html"
     )
-    await client.start()
+    await client.start()  # uses the session string, no interaction needed
     me = await client.get_me()
     logger.info(f"USERBOT STARTED {me.id}:{me.username}")
 

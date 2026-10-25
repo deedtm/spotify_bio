@@ -1,28 +1,49 @@
 """
-One-time login script for the userbot. Run it locally, enter the phone number
-and the code from Telegram, then copy the printed session string into .env
+One-time login script for the userbot via QR code (no login code needed).
 
 python -m userbot.get_session
+
+Scan the QR from Telegram: Settings -> Devices -> Link Desktop Device.
+Copy the printed session string into .env (USERBOT_SESSION)
 """
 import asyncio
 
-# pyrogram 2.0.106 calls asyncio.get_event_loop() at import time, which is gone in python 3.12+
-asyncio.set_event_loop(asyncio.new_event_loop())
-
-from pyrogram import Client
+import qrcode
+from telethon import TelegramClient
+from telethon.sessions import StringSession
 
 from .config import API_HASH, API_ID
 
-SESSION_NAME = "spotify_bio_userbot"
+
+def print_qr(url: str):
+    code = qrcode.QRCode(border=1)
+    code.add_data(url)
+    code.make()
+    code.print_ascii()
 
 
 async def main():
-    async with Client(SESSION_NAME, api_id=API_ID, api_hash=API_HASH) as client:
+    client = TelegramClient(StringSession(), API_ID, API_HASH)
+    await client.connect()
+
+    if not await client.is_user_authorized():
+        qr = await client.qr_login()
+        print("Scan this QR from Telegram: Settings -> Devices -> Link Desktop Device\n")
+        print_qr(qr.url)
+        print("(the QR refreshes automatically every ~30 seconds)")
+
+        while not qr.token_alive:
+            try:
+                await qr.wait()
+            except asyncio.TimeoutError:
+                await qr.recreate()
+                print_qr(qr.url)
+
         me = await client.get_me()
-        session_string = await client.export_session_string()
         print(f"\nLogged in as {me.first_name} (@{me.username})")
-        print("\nAdd this line to your .env:\n")
-        print(f"USERBOT_SESSION={session_string}")
+
+    print("\nAdd this line to your .env:\n")
+    print(f"USERBOT_SESSION={client.session.save()}")
 
 
 if __name__ == "__main__":
