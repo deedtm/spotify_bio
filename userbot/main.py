@@ -36,6 +36,12 @@ async def main():
     me = await client.get_me()
     logger.info(f"USERBOT STARTED {me.id}:{me.username}")
 
+    logger.debug("Caching dialogs...")
+    dialog_count = 0
+    async for _ in client.iter_dialogs():
+        dialog_count += 1
+    logger.debug(f"Cached {dialog_count} dialogs")
+
     while True:
         try:
             await apply_edits(client)
