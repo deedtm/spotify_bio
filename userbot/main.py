@@ -42,8 +42,8 @@ async def apply_edits(client: Client):
 
 
 async def main():
-    if not (API_ID and API_HASH and SESSION_STRING):
-        raise SystemExit("USERBOT_API_ID, USERBOT_API_HASH and USERBOT_SESSION must be set in .env")
+    if not SESSION_STRING:
+        raise SystemExit("USERBOT_SESSION must be set in .env (run python -m userbot.get_session)")
 
     client = Client(
         "spotify_bio_userbot",
