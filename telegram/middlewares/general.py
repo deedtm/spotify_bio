@@ -55,7 +55,8 @@ class GeneralMW(BaseMiddleware):
                 if isinstance(wmsg, Message):
                     await wmsg.edit_text(text)
                 else:
-                    await event.bot.send_message(event.message.chat.id, text)
+                    chat = event.message.chat if hasattr(event, "message") else event.chat
+                    await event.bot.send_message(chat.id, text)
 
     async def __call__(
         self,

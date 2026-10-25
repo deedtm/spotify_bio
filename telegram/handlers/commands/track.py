@@ -44,7 +44,7 @@ async def setpost_state(msg: Message, state: FSMContext):
 
     if post := await post_crud.get_one():
         await post_crud.delete("id", post.id)
-    await post_crud.add(chat_id=fwd.id, message_id=msg.forward_from_message_id, html=html)
+    await post_crud.add(chat_id=str(fwd.id), message_id=msg.forward_from_message_id, html=html)
 
     await msg.answer(tmpl.marker_set.format(tg_config.TRACK_MARKER))
 
