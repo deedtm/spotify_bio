@@ -22,7 +22,7 @@ async def apply_edits(client: TelegramClient):
             logger.info(f"Post {chat_id}/{message_id} edited")
         except Exception as e:
             logger.error(f"Edit {chat_id}/{message_id} failed: {e}")
-        await edit_crud.update(edit.id, done=True)
+        await edit_crud.update("id", edit.id, done=True)
 
 
 async def main():

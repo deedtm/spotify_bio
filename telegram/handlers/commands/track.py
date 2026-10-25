@@ -95,6 +95,6 @@ async def setmarker_state(msg: Message, state: FSMContext):
                 await msg.bot.edit_message_text(
                     new_html, chat_id=post.chat_id, message_id=post.message_id
                 )
-                await post_crud.update(post.id, html=new_html)
+                await post_crud.update("id", post.id, html=new_html)
 
     await msg.answer(tmpl.marker_set.format(new_marker))

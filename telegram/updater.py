@@ -55,7 +55,7 @@ async def update_post(bot: Bot) -> bool:
         return False
 
     await edit_crud.push(post.chat_id, post.message_id, new_text)
-    await post_crud.update(post.id, html=new_text)
+    await post_crud.update("id", post.id, html=new_text)
     logger.info(f"Edit queued: {track_line}")
     return True
 
