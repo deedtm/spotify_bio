@@ -6,6 +6,8 @@ class Spotify(BaseModel):
     idle_line: str
     np: str
     nothing: str
+    forward_post: str
+    forward_post_again: str
     marker: str
     marker_set: str
     marker_missing: str

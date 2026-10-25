@@ -17,11 +17,18 @@ from ...updater import replace_marker_line, update_post
 
 
 @router.message(AccessLevelFilter(ACCESSES["owner"]), Command("setpost"))
-async def setpost_handler(msg: Message):
+async def setpost_handler(msg: Message, state: FSMContext):
+    await msg.answer(tmpl.forward_post)
+    await state.set_state(TrackState.post)
+
+
+@router.message(AccessLevelFilter(ACCESSES["owner"]), TrackState.post)
+async def setpost_state(msg: Message, state: FSMContext):
     """Owner forwards the channel post here to let the bot edit it"""
+    await state.clear()
     fwd = msg.forward_from_chat
     if fwd is None or msg.forward_from_message_id is None:
-        await msg.answer(tmpl_ex.wrong_args)
+        await msg.answer(tmpl.forward_post_again)
         return
 
     if POST_LINK is not None:
